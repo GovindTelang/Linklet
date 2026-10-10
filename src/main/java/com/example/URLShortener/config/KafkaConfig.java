@@ -41,7 +41,7 @@ public class KafkaConfig {
     @Bean
     public NewTopic clickEventsTopic() {
         return TopicBuilder.name(CLICK_EVENTS_TOPIC)
-                .partitions(2)
+                .partitions(1)
                 .replicas(1)
                 .build();
     }
@@ -112,7 +112,7 @@ public class KafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(2);
+        factory.setConcurrency(1);
 
         return factory;
     }
