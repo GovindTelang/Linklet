@@ -29,6 +29,8 @@ services:
         sync: false
       - key: KAFKA_SASL_PASSWORD
         sync: false
+      - key: KAFKA_SSL_TRUSTSTORE_CERTIFICATES
+        sync: false
       - key: RATE_LIMIT
         value: "20"
       - key: APP_BASE_URL

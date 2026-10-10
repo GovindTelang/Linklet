@@ -6,6 +6,7 @@ import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.config.SslConfigs;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,9 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.bootstrap-servers:localhost:9092}")
     private String bootstrapServers;
+
+    @Value("${KAFKA_SSL_TRUSTSTORE_CERTIFICATES:}")
+    private String sslTruststoreCertificates;
 
     @Value("${KAFKA_SECURITY_PROTOCOL:PLAINTEXT}")
     private String securityProtocol;
@@ -116,7 +120,7 @@ public class KafkaConfig {
 
         return factory;
     }
-
+ 
     private void addSecurityProperties(Map<String, Object> props) {
         props.put(
                 CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,
@@ -140,6 +144,21 @@ public class KafkaConfig {
                             + "\" password=\""
                             + escapeJaas(saslPassword)
                             + "\";"
+            );
+        }
+
+        if ("SASL_SSL".equalsIgnoreCase(securityProtocol)) {
+            if (sslTruststoreCertificates.isBlank()) {
+                throw new IllegalStateException(
+                        "KAFKA_SSL_TRUSTSTORE_CERTIFICATES must be configured "
+                                + "when using SASL_SSL."
+                );
+            }
+
+            props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PEM");
+            props.put(
+                    SslConfigs.SSL_TRUSTSTORE_CERTIFICATES_CONFIG,
+                    sslTruststoreCertificates.replace("\\n", "\n")
             );
         }
     }
