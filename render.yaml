@@ -21,6 +21,14 @@ services:
         value: "true"
       - key: KAFKA_SERVERS
         sync: false
+      - key: KAFKA_SECURITY_PROTOCOL
+        value: "SASL_SSL"
+      - key: KAFKA_SASL_MECHANISM
+        value: "SCRAM-SHA-256"
+      - key: KAFKA_SASL_USERNAME
+        sync: false
+      - key: KAFKA_SASL_PASSWORD
+        sync: false
       - key: RATE_LIMIT
         value: "20"
       - key: APP_BASE_URL
